@@ -1,34 +1,37 @@
 \documentclass[draft]{article}
+\usepackage[]{ifdraft}
+
+\ifdraft{
+  \usepackage[english]{babel}
+  \usepackage{blindtext}
+}{
+  \usepackage[italian]{babel}
+}
+
+\usepackage[top=2cm, bottom=2cm, outer=1cm, inner=1cm]{geometry}
+
 \usepackage{tikz}
 \usetikzlibrary{calc}
-\usepackage[top=2cm, bottom=2cm, outer=1cm, inner=1cm]{geometry}
-\usepackage[english]{babel}
-\usepackage{blindtext}
-\usepackage[]{caption}
+
+\newcommand{\figcenter}[2]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[inner sep=0pt, anchor=center] at (current page.center) (fig) {
+      \ifdraft{\color{gray}\rule{\paperwidth}{3in}       
+      }{\includegraphics[width=\paperwidth,height=3in]{#1}
+      }
+    }; 
+    \node[text width=0.8\textwidth,anchor=north] at (fig.south) {#2};
+  \end{tikzpicture}
+}
+
 \begin{document}
 
-\tikz[remember picture,overlay] 
-  %\node[opacity=1,inner sep=0pt] at (current page.center) (fig) {
-  \node[opacity=1,inner sep=0pt] at ($ (current page.center) !.1! (current page.north)$ ) (fig) {
-    \includegraphics[width=\paperwidth,height=3in]{example-image}
-  }; 
-\tikz[remember picture,overlay] 
-  \node[text width=\textwidth,anchor=north] at (fig.south) {\blindtext};
+\figcenter{blabla}{caption sdlas sdjn fafmv af}
 
 \clearpage
 
-\tikz[remember picture,overlay] 
-  \node[opacity=0.3,inner sep=0pt] at (current page.center) (fig) {
-    \includegraphics[width=\paperwidth,height=3in]{example-image}
-  };
-\tikz[remember picture,overlay] 
-  \node[text width=\textwidth,anchor=north] at (fig.south) {\blindtext};
+\figcenter{blabla}{caption sdlas sdjn fafmv af}
 
-\clearpage
 
-\tikz[remember picture,overlay,anchor=north] 
-  \node[opacity=0.9,inner sep=0pt] at (current page.north){
-    \includegraphics[width=\paperwidth,height=6in]{example-image}
-  };
 
 \end{document}
