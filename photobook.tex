@@ -1,28 +1,91 @@
-% blurb.cls
-% Prepare a photobook/magazine for blurb.com
-% 2015 Mauro Faccin mauro.fccn at gmail.com
+\documentclass[article(a4paper)]{codedoc}
 
+\usepackage[dvipsnames]{xcolor}
+\usepackage[bookmarks,
+            bookmarksopen,bookmarksdepth=2
+            urlcolor=Green,
+            colorlinks=true]{hyperref}
+\usepackage[]{url}
+%% Fonts
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\linespread{1.05}
+\usepackage{microtype}
+\usepackage[]{verbatim}
 
-\ProvidesClass{blurb}[2005/09/01 version 0.1 of Blurb]
+\usepackage[Q=yes]{examplep}
+
+\def\cmdcolor{red}
+\newcommand{\pbitem}[1]{\item[\color{\cmdcolor}\Q{#1}]}
+\newcommand{\pbcmd}[1]{\color{\cmdcolor}\Q{#1}}
+
+\title{PHOTOBOOK class}
+\author{Mauro}
+\date{\today}
+
+\begin{document}
+\CodeEscape?
+\ProduceFile{photobook.cls}[PhotoBook][v0.1][2015/06/14]
+
+\maketitle
+
+This is a small class intended to help photographers or photo-amateurs to
+produce a photobook to eventually print.
+It should work with \url{blurb.com}
+
+\tableofcontents
+
+\section{Intro}
+\label{sec:intro}
+
+\begin{invisible}
+\ProvidesClass{photobook}[?FileDate ?FileVersion of ?FileName]
 \NeedsTeXFormat{LaTeX2e}
 
-%% New lenght provided by the class
-\newlength{\blurbwidth}
-\newlength{\blurbheight}
-\newlength{\blurbbleeds}
-\setlength{\blurbbleeds}{0.125in}
+\end{invisible}
 
+This class provide some useful tricks to easily produce a eyecandy photobook.
+It's intended to work with \url{blurb.com} for eventual hardcopy productions.
+
+\begin{invisible}
+%% New lenght provided by the class
+\newlength{\pbookwidth}
+\newlength{\pbookheight}
+\newlength{\pbookbleeds}
+\setlength{\pbookbleeds}{0.125in}
+
+\end{invisible}
+
+New lengths:
+\begin{description}
+  \pbitem{\\pbookwidth} Page Width (bleeds included)
+  \pbitem{\\pbookheight} Page Height (bleeds included)
+  \pbitem{\\pbookbleeds} Page Bleeds
+\end{description}
+
+
+\begin{invisible}
 \RequirePackage[cmyk]{xcolor}
 \RequirePackage{everypage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Option declaration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{invisible}
+
+\section{Class Options}
+
+This class originate from \verb+scrbook+ class, all unlisted options will be
+passed to it.
+
+\begin{description}
+    \pbitem{magazinepro}: load \url{blurb.com} magazine--pro page sizes.
+\begin{invisible}
 \DeclareOption{magazinepro}{%
   %% 8.625 x 11.24 in
   %% 621 x 810 pts
-  \setlength{\blurbwidth}{8.625in}
-  \setlength{\blurbheight}{11.25in}
+  \setlength{\pbookwidth}{8.625in}
+  \setlength{\pbookheight}{11.25in}
   %% PDF/X-3:2002 info
   %% The \pageattr values have to be in pt, compare with the page size settings above.
   \pdfpageattr{%
@@ -33,15 +96,23 @@
     /TrimBox [0.00000 9.00000 612.00000 801.00000]
   }
 }
+  
+\end{invisible}
+  \pbitem{showbleeds}: Show bleeds with colored lines
+  \begin{invisible}
 \DeclareOption{showbleeds}{%
   \AddEverypageHook{\drawbleeds}
 }
+    
+  \end{invisible}
+\end{description}
 
+\begin{invisible}
 %%All remaining options for the scrbook
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{scrbook}
 }
-
+  
 %% Execute default options
 \ExecuteOptions{magazinepro}
 %% Process all other options
@@ -53,8 +124,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{geometry}
 \geometry{%
-  paperwidth=\blurbwidth,
-  paperheight=\blurbheight,
+  paperwidth=\pbookwidth,
+  paperheight=\pbookheight,
             % amount we 'lose' (visually) due to the binding
             % left and right pages are offset a bit to the sides
             % (typically looks better for most kinds of bindings)
@@ -98,11 +169,6 @@
   }%
 }
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Provided commands
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \RequirePackage{tikz}
 \RequirePackage{tikzpagenodes}
 % provide nodes as:
@@ -112,6 +178,22 @@
 % - current page footer area
 \usetikzlibrary{calc, positioning, matrix}
 \RequirePackage{xkeyval}
+
+\end{invisible}
+
+\section{Commands}
+\label{sec:commands}
+
+\begin{description}
+    \pbitem{\\putbox[]\{\}}
+    \pbitem{\\putmatrix[]\{\}}
+    \pbitem{\\caption[]\{\}}
+\end{description}
+
+\begin{invisible}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Provided commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \makeatletter
 
@@ -167,14 +249,17 @@
                       shift=(current page.south west)]
 
     \ifodd\c@page
-    \draw[black!50] (0,\blurbbleeds) rectangle
-    ($(\blurbwidth-\blurbbleeds,\blurbheight-\blurbbleeds)$); 
+    \draw[black!50] (0,\pbookbleeds) rectangle
+    ($(\pbookwidth-\pbookbleeds,\pbookheight-\pbookbleeds)$); 
     \else
-      \draw[black!50] (\blurbbleeds,\blurbbleeds) rectangle
-                   ($(\blurbwidth,\blurbheight-\blurbbleeds)$); 
+      \draw[black!50] (\pbookbleeds,\pbookbleeds) rectangle
+                   ($(\pbookwidth,\pbookheight-\pbookbleeds)$); 
     \fi
   \end{tikzpicture}
 }
 
 \makeatother
 \endinput
+
+\end{invisible}
+\end{document}
