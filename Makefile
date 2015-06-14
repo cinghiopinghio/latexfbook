@@ -16,3 +16,6 @@ install: class doc
 	cp photobook.cls ${LATEX}
 	mkdir -p ${DOCS}
 	cp photobook.pdf ${DOCS}
+
+clean:
+	latexmk -C
